@@ -3,6 +3,10 @@
 
 #include <cmath>
 
+namespace {
+    const double EPSILON = 1e-12;
+}
+
 class CVector2D {
     public:
         CVector2D(double vecx = 0, double vecy = 0): x (vecx), y(vecy) {}
@@ -32,8 +36,16 @@ class CVector2D {
         }
 
         CVector2D& operator += (const CVector2D & rhs) {
-            CVector2D res = *this - rhs;
+            CVector2D res = *this + rhs;
             return *this = res;
+        }
+
+        bool operator == (const CVector2D & rhs) const {
+            return fabs(x - rhs.x) < EPSILON && fabs(y - rhs.y) < EPSILON;
+        }
+
+        bool operator != (const CVector2D & rhs) const {
+            return !(*this == rhs);
         }
 
     public:

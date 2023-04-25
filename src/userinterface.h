@@ -37,7 +37,7 @@ class CUserInterface_SDL {
         m_window = SDL_CreateWindow("Drone School", // creates a window
                                         SDL_WINDOWPOS_CENTERED,
                                         SDL_WINDOWPOS_CENTERED,
-                                        1000, 1000, 0);
+                                        1200, 800, 0);
         if (!m_window) return false;
 
 
@@ -49,7 +49,7 @@ class CUserInterface_SDL {
         m_renderer = SDL_CreateRenderer(m_window, -1, render_flags);
         if (!m_renderer) return false;
 
-        if (!m_droneTextures.loadFromFile("resources/rod.png", m_renderer)) {
+        if (!m_droneTextures.loadFromFile("resources/drone.png", m_renderer)) {
             return false;
         }
         if (!m_rectTexture.createFromRect(m_droneTextures.m_width/10, m_droneTextures.m_height/10, m_renderer)) {

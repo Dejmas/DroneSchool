@@ -2,3 +2,6 @@ build
 username
 dependencies.make
 .vscode/c_cpp_properties.json
+debug/coord.test
+debug/lerp.test
+debug/vector2d.test
