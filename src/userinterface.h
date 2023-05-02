@@ -6,8 +6,15 @@
 #include <SDL2/SDL_timer.h>
 
 #include "droneschool.h"
+#include "item.h"
 #include "texture.h"
+
 #include <vector>
+#include <map>
+#include <memory>
+#include <stdexcept>
+
+
 
 class CUserInterface_SDL {
     public:
@@ -49,13 +56,15 @@ class CUserInterface_SDL {
         m_renderer = SDL_CreateRenderer(m_window, -1, render_flags);
         if (!m_renderer) return false;
 
-        if (!m_droneTextures.loadFromFile("resources/drone.png", m_renderer)) {
-            return false;
-        }
-        if (!m_rectTexture.createFromRect(m_droneTextures.m_width/10, m_droneTextures.m_height/10, m_renderer)) {
-            return false;
-        }
         return true;
+    }
+
+    void registerTexture(const std::string & name, const std::string & path) {
+        auto texture = std::make_shared<CTexture> ();
+        if (! texture->loadFromFile(path, m_renderer)) {
+            throw std::invalid_argument("failed to load texture");
+        }
+        m_textureByName[name] = texture;
     }
 
     void animationLoop() {
@@ -75,14 +84,9 @@ class CUserInterface_SDL {
     private:
     void handleEvents() {
         SDL_Event event;
-        CSupervisor * pSupervisor = m_droneSchool.getSupervisor();
-        if (pSupervisor == nullptr) { 
-            std::cerr << "No supervisor!" << std::endl;
-            m_close = false;
-            return;
-        }
-        CRemoteControl * pRemote = pSupervisor->getRemote();
 
+        CRemoteControl * pRemote = nullptr;
+        TUserInputAction userActions;
         // Events management
         while (SDL_PollEvent(&event)) {    
             switch (event.type) {
@@ -96,22 +100,23 @@ class CUserInterface_SDL {
                 // keyboard API for key pressed
                 switch (event.key.keysym.scancode) {
                 case SDL_SCANCODE_W:
-                    if (pRemote) pRemote->goForward();
+                    userActions.m_forward = true;
                     break;
                 case SDL_SCANCODE_S:
-                    if (pRemote) pRemote->goBackward();
+                    userActions.m_backward = true;
                     break;
                 case SDL_SCANCODE_A:
-                    if (pRemote) pRemote->turnLeft();
+                    userActions.m_turnLeft = true;
                     break;
                 case SDL_SCANCODE_D:
-                    if (pRemote) pRemote->turnRight();
+                    userActions.m_turnRight = true;
+                    break;
+                case SDL_SCANCODE_RETURN:
+                    userActions.m_pick = true;
                     break;
                 case SDL_SCANCODE_LEFT:
-                    pSupervisor->selectPrev();
                     break;
                 case SDL_SCANCODE_RIGHT:
-                    pSupervisor->selectPrev();
                     break;
 
                 case SDL_SCANCODE_SPACE:
@@ -122,10 +127,26 @@ class CUserInterface_SDL {
                 }
             }
         }
+        // assign user Actions
+        m_droneSchool.setUserActions(userActions);
     }
 
     void update() {
-        m_droneSchool.updateDrones();
+        m_droneSchool.update();
+    }
+
+    void renderItem (const IItem * item) {
+        CCoord position = item->getPosition();
+
+        auto texture = m_textureByName.at(item->getTextureName());
+
+        SDL_FRect dest = {(float)position.x - item->getWidth() / 2.0f, 
+                          (float)position.y - item->getHeight() / 2.0f, 
+                          (float)item->getWidth(), 
+                          (float)item->getHeight()};
+        SDL_RenderCopyExF(m_renderer, texture->getData(), NULL, &dest, 360.0-item->getAngle(), NULL, (SDL_RendererFlip)0);
+        // SDL_SetRenderDrawColor(m_renderer, 0x00, 0xFF, 0x00, 0xFF);
+        // SDL_RenderDrawPointF(m_renderer, item->getTarget().x, item->getTarget().y);
     }
 
     void drawFrame() {
@@ -133,30 +154,16 @@ class CUserInterface_SDL {
         SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 0);
         SDL_RenderClear(m_renderer);
 
-        // Render drones
-        const auto & drones = m_droneSchool.getDrones();
-        for (auto pDrone : drones) {
-            CCoord position = pDrone->getPosition();
-            SDL_FRect dest = {(float)position.x, (float)position.y, m_droneTextures.m_width/10.0f, m_droneTextures.m_height/10.0f};
-            SDL_RenderCopyExF(m_renderer, m_droneTextures.getData(), NULL, &dest, pDrone->getAngle(), NULL, (SDL_RendererFlip)0);
-            SDL_SetRenderDrawColor(m_renderer, 0x00, 0xFF, 0x00, 0xFF);
-            SDL_RenderDrawPointF(m_renderer, pDrone->getTarget().x, pDrone->getTarget().y);
+        // Render Items
+        const auto & items = m_droneSchool.getItems();
+        for (auto item : items) {
+            renderItem(item.get());
         }
-        
-        // Render rectangle around selected drone
-        CSupervisor * pSupervisor = m_droneSchool.getSupervisor();
-        if (pSupervisor) {
-            CRemoteControl * pRemote = pSupervisor->getSelectedDrone();
-            if (pRemote) {
-                CCoord p = pRemote->getDronesLocation();
-                double angle = pRemote->getDronesAngle();
-                SDL_FRect selectedDroneRect = {(float)p.x, (float)p.y, m_droneTextures.m_width/10.0f, m_droneTextures.m_height/10.0f};
+
+        // Render Drone
+        const auto & drone = m_droneSchool.getDrone();
+        renderItem(drone);
                 
-                SDL_RenderCopyExF(m_renderer, m_rectTexture.getData(), nullptr, &selectedDroneRect, angle, nullptr, (SDL_RendererFlip)0);
-            }
-        }
-        
-        
         // triggers the double buffers
         // for multiple rendering
         SDL_RenderPresent(m_renderer);
@@ -167,7 +174,6 @@ class CUserInterface_SDL {
         SDL_Window *    m_window;
         SDL_Renderer *  m_renderer;
         bool            m_close;
-        CTexture        m_droneTextures;
-        CTexture        m_rectTexture;
+        std::map <std::string, std::shared_ptr<CTexture>>   m_textureByName;
 };
 #endif // USERINTERFACE_H

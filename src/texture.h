@@ -5,9 +5,10 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_timer.h>
 class CUserInterface_SDL;
+#include <string>
 
 class CTexture {
-    public:
+  public:
     friend CUserInterface_SDL;
     CTexture ()
     : m_image(nullptr)
@@ -15,6 +16,9 @@ class CTexture {
     , m_height(0)
     {
     }
+
+    CTexture (const CTexture &) = delete;
+    CTexture & operator = (const CTexture &) = delete;
 
     ~CTexture() {
         // destroy texture
@@ -54,8 +58,7 @@ class CTexture {
         // printing rectangle in RGB surface
         SDL_Renderer * softwareRenderer = SDL_CreateSoftwareRenderer(surface);
         if (softwareRenderer == nullptr) return false;
-        // SDL_SetRenderDrawColor(softwareRenderer, 0x00, 0x00, 0x00, 0x00);
-        // SDL_RenderClear(softwareRenderer);
+
         SDL_SetRenderDrawColor(softwareRenderer, 0x00, 0xFF, 0x00, 0xFF);
         SDL_RenderDrawRect(softwareRenderer, &rect);
 
@@ -72,10 +75,10 @@ class CTexture {
         return m_image;
     }
 
-    private:
-        SDL_Texture* m_image;
-        int          m_width,
-                     m_height;
+  private:
+    SDL_Texture* m_image;
+    int          m_width,
+                 m_height;
 };
 
 #endif // TEXTURE_H

@@ -3,70 +3,96 @@
 
 #include "drone.h"
 #include "user.h"
+#include "student.h"
 #include "supervisor.h"
 #include "remotecontrol.h"
+#include "lesson.h"
 
 #include <vector>
+#include <algorithm>
 
 class CDroneSchool {
-    public:
-        CDroneSchool (): m_supervisor(nullptr) {
-        }
-        // delete CC and OP =
-        CDroneSchool (const CDroneSchool &) = delete;
-        CDroneSchool & operator = (const CDroneSchool &) = delete;
+public:
+    CDroneSchool (): m_supervisor(nullptr) {
+    }
+    // delete CC and OP =
+    CDroneSchool (const CDroneSchool &) = delete;
+    CDroneSchool & operator = (const CDroneSchool &) = delete;
 
-        ~CDroneSchool() {
-            for (CDrone * pDrone : m_drones) { 
-                delete pDrone;
+    ~CDroneSchool() {
+        delete m_drone;
+        delete m_student;
+        delete m_supervisor;
+    }
+
+    void setupDrone (const std::string & name, CCoord coord = CCoord()) {
+        auto drone = new CDrone(*this, name, "drone", coord);
+        m_drone = drone;
+    }
+
+    void setupSupervisor (const std::string & name) {
+        m_supervisor = new CSupervisor(name);
+        m_supervisor->setRemote(m_drone->getRemoteControl());
+    }
+
+    void setupStudent (const std::string & name) {
+        m_student = new CStudent(name);
+        m_student->setRemote(m_drone->getRemoteControl());
+    }
+
+    void addLesson(ALesson lesson) {
+        m_lessons.push_back(lesson);
+        m_currentLesson = lesson;
+    }
+
+    void setUserActions(TUserInputAction userActions) {
+        m_userActions = userActions;
+        m_student->setUserActions(userActions);
+    }
+
+    auto getItems() const {
+        return m_currentLesson->getItems();
+    }
+
+    auto getItemsNear(CCoord position, double distance) {
+        std::vector<AItem> res;
+        for (auto item : getItems()) {
+            if ((item->getPosition() - position).abs() < distance) {
+                res.push_back(item);
             }
-            for (CUser * pUser : m_users) {
-                delete pUser;
-            }
-            delete m_supervisor;
         }
+        std::sort(res.begin(), res.end(), [&position](AItem itemA, AItem itemB) {
+            return (itemA->getPosition() - position).abs() < (itemB->getPosition() - position).abs();
+        });
+        return res;
+    }
 
-        void addDrone (const std::string & name, CCoord coord = CCoord()) {
-            auto drone = new CDrone(name, coord);
-            m_drones.push_back(drone);
+    void startLesson() {
+        m_currentLesson->start(m_supervisor, m_drone);
+    }
+
+    void update() {
+        m_drone->update();
+        if (!m_currentLesson->isComplete()) {
+            m_currentLesson->update();
+        } else {
+            m_currentLesson->start(m_student, m_drone);
         }
+    }
 
-        void createSupervisor (const std::string & name) {
-            auto sv = new CSupervisor(name);
-            m_supervisor = sv;
-        }
+    // can't be const, it's returning owning non-const pointer
+    auto getSupervisor() { return m_supervisor; }
 
-        void addUser (const std::string & name) {
-            auto user = new CUser(name);
-            m_users.push_back(user);
-        }
+    const CDrone * getDrone() const { return m_drone; }
 
-        void distributeDrones() {
-            size_t noPairs = std::min(m_drones.size(), m_users.size());
-            for (size_t i = 0; i < noPairs; i ++) {
-                CRemoteControl * remote = new CRemoteControl(*m_drones[i]);
-                m_users[i]->setRemote(remote);
-                m_supervisor->addRemote(remote);
-            }
-        }
+private:
+    CDrone      *         m_drone;
+    CSupervisor *         m_supervisor;
+    CStudent    *         m_student;
+    std::vector<ALesson>  m_lessons;
+    ALesson               m_currentLesson;
+    TUserInputAction      m_userActions;
 
-        void updateDrones() {
-            for (auto pDrone : m_drones) {
-                pDrone->update();
-            }
-        }
-
-        // can't be const, it's returning owning non-const pointer
-        auto getSupervisor() { return m_supervisor; } 
-
-        const std::vector<CDrone *> & getDrones() const {
-            return m_drones;
-        }
-
-    private:
-        std::vector<CDrone *> m_drones;
-        std::vector<CUser *> m_users;
-        CSupervisor *       m_supervisor;
 };
 
 #endif // DRONESCHOOL_H
