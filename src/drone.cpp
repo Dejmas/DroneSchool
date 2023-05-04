@@ -8,12 +8,14 @@ namespace {
 
 
 CDrone::CDrone(CDroneSchool & school, const std::string & name, const std::string & textureName, CCoord pos)
-: IItem(name, textureName, pos, 50, 50, 0)
+: IItem(name, textureName, pos, 4*50, 4*50, 0)
 , m_school(school)
 , m_maxSpeed(5.0)
 , m_forwardForce(0)
-, m_angleFraction(1)
 , m_moveFraction(1)
+, m_angleStart{}
+, m_angleTarget{}
+, m_angleFraction(1)
 , m_remote(new CRemoteControl(*this)) {}
 
 void CDrone::setMovingVector(CVector2D vec) {
@@ -62,14 +64,16 @@ void CDrone::update() {
 }
 
 void CDrone::pick() {
-    printf("Pick\n");
+    
     std::vector<AItem> itemsNear = m_school.getItemsNear(m_position, PICK_DISTANCE);
     for (size_t i = 0; i < itemsNear.size(); i ++) {
         if (itemsNear[i]->getIsPickable()) {
             m_bindedItem = itemsNear[i];
-            break;
+            std::cout << "Pick succefull\n";
+            return;
         }
     }
+    std::cout << "Pick failed\n";
 }
 
 void CDrone::drop() {
@@ -82,6 +86,7 @@ void CDrone::drop() {
         m_bindedItem->setAngle(newAngle);
         m_bindedItem->setPosition(newPosition);
         m_bindedItem = nullptr;
+        std::cout << "Drop\n";
     }
 }
 

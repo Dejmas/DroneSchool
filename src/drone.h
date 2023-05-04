@@ -11,12 +11,13 @@ class CDroneSchool;
 
 class CDrone : public IItem {
     private:        
-        CVector2D       m_movingVector, m_targetVector, m_startVector;
-        double          m_angleTarget, m_maxSpeed, m_forwardForce, m_angleStart, m_angleFraction, m_moveFraction;
-        CRemoteControl* m_remote;
-
         AItem           m_bindedItem;
         CDroneSchool  & m_school;
+        CRemoteControl* m_remote;
+
+        CVector2D       m_movingVector, m_targetVector, m_startVector;
+        double          m_maxSpeed, m_forwardForce, m_moveFraction, m_angleStart, m_angleTarget, m_angleFraction;
+
 
     public:
         CDrone(CDroneSchool & school, const std::string & name, const std::string & textureName, CCoord pos = CCoord());

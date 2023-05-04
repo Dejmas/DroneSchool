@@ -1,5 +1,5 @@
 # compilation flags
-CFLAGS = `sdl2-config --cflags`
+CFLAGS = -std=c++17 `sdl2-config --cflags`
 
 # linking flags
 LFLAGS = `sdl2-config --libs` -lSDL2_image
@@ -39,6 +39,9 @@ debug/%.test: tests/%.test.cpp $(filter-out build/main.o,$(OBJS))
 .PHONY: test_all
 test_all: $(TESTS:tests/%.test.cpp=debug/%.test)
 	for TEST in debug/*.test; do ./$$TEST  && echo $${TEST} ok || echo $${TEST} failed!; done
+
+lint: 
+	clang-tidy $(SRC)
 
 
 .PHONY: all clean run
