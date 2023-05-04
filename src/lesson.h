@@ -21,7 +21,7 @@ private:
     CDrone                * m_drone;
     CCoord                  m_startLocation;
 public:
-    CLesson(std::string_view name);
+    CLesson(const std::string & name);
     ~CLesson() = default;
 
     void addCommand (ACommand command);

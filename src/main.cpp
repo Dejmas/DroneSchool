@@ -10,17 +10,18 @@
 #include "dropitemcommand.h"
 using namespace std;
 
-unsigned IItem::lastId = 0;
-
 ALesson makeLesson() {
     ALesson lesson = make_shared<CLesson> ("From A to B");
+
+    auto background = std::make_shared<CStaticItem>("lawn", "lawn-2");
+    background->setWidth(1200);
+    background->setHeight(800);
+    background->setPosition(CCoord(background->getWidth()/2, background->getHeight()/2));
     
     auto startPort = std::make_shared<CStaticItem>("port", "helipad");
     startPort->setPosition(CCoord(200, 650));
     startPort->setWidth(150);
     startPort->setHeight(150);
-
-    
 
     auto spot1 = std::make_shared<CStaticItem>("spot-1", "spot-1");
     spot1->setWidth(100);
@@ -40,12 +41,15 @@ ALesson makeLesson() {
     auto rod = std::make_shared<CStaticItem>("rod", "rod");
     rod->setPosition(spot1->getPosition());
     rod->setIsPickable(true);
+    rod->setWidth(100);
+    rod->setHeight(100);
 
     auto fish = std::make_shared<CStaticItem>("fish", "fish");
     fish->setPosition(spot3->getPosition());
     fish->setIsPickable(true);
 
     lesson->setStartLocation(startPort->getPosition());
+    lesson->addItem(background);
     lesson->addItem(startPort);
     lesson->addItem(spot1);
     lesson->addItem(spot2);
@@ -71,6 +75,7 @@ int main(int argc, char *argv[])
     droneSchool.setupDrone("Drone 1", CCoord(500, 500));
     droneSchool.setupSupervisor("Dr. Drone Expert");
     droneSchool.setupStudent("Student 1");
+    //droneSchool.setBackground("lawn");
 
     ALesson lesson = makeLesson();
 
@@ -86,7 +91,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    gui.registerTexture("drone", "resources/drone.png");
+    gui.registerTexture("drone", "resources/drone-light.png");
     gui.registerTexture("rod", "resources/rod.png");
     gui.registerTexture("fish", "resources/fish.png");
     gui.registerTexture("helipad", "resources/helipad.png");
@@ -94,6 +99,9 @@ int main(int argc, char *argv[])
     gui.registerTexture("spot-1", "resources/spot-1.png");
     gui.registerTexture("spot-2", "resources/spot-2.png");
     gui.registerTexture("spot-3", "resources/spot-3.png");
+    gui.registerTexture("lawn", "resources/lawn.jpeg");
+    gui.registerTexture("lawn-2", "resources/lawn-2.jpeg");
+    gui.registerTexture("light", "resources/light.png");
 
     gui.animationLoop();
 

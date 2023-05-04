@@ -1,8 +1,13 @@
 #include "lesson.h"
 #include "drone.h"
 
-CLesson::CLesson(std::string_view name) : m_name (name)
+CLesson::CLesson(const std::string & name) 
+: m_name (name)
+, m_isComplete (false)
+, m_user (nullptr)
+, m_drone (nullptr)
 {
+    
 }
 
 void CLesson::addCommand (ACommand command) {
@@ -32,7 +37,7 @@ void CLesson::update() {
     }
     ACommand command = *m_commandIter;
     if (command->isDone(*m_drone)) {
-        printf("Done!\n");
+        std::printf("Done!\n");
         m_commandIter ++;
     } else {
         command->letUserWorkOnIt(m_user);
