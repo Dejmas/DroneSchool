@@ -5,7 +5,7 @@
 
 
 #### Setup For Build
-This project requires `liblibsdl2-dev` and `libsdl2-image-dev`. Check the installation for your machine https://wiki.libsdl.org/SDL2/Installation. 
+This project requires `libsdl2-dev` and `libsdl2-image-dev`. Check the installation for your machine https://wiki.libsdl.org/SDL2/Installation. 
 
 On Debian based system you can use those commands.
 
