@@ -1,0 +1,6 @@
+Checks: 'clag-diagnostic-*,clang-analyzer-*,clang-analyzer-cplusplus*,cppcoreguidelines-*,-cppcoreguidelines-avoid-magic-numbers,-cppcoreguidelines-avoid-non-const-global-variables,-cppcoreguidelines-pro-type-vararg'
+WarningsAsErrors: true
+AnalyzeTemporaryDtors: false
+
+
+
