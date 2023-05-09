@@ -30,6 +30,7 @@ public:
     void setStartLocation(CCoord);
     void start(IUser *, CDrone *);
     void update();
+    void rewind();
     
     bool isComplete() const;
     const std::vector <AItem> & getItems() const { return m_items; }
