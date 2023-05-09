@@ -6,14 +6,6 @@
 #include "command.h"
 #include <memory>
 
-struct TUserInputAction {
-    bool m_forward = false,
-         m_backward = false, 
-         m_turnLeft = false, 
-         m_turnRight = false,
-         m_pick = false;
-};
-
 class ICommand;
 
 class IUser {
@@ -26,10 +18,6 @@ class IUser {
             m_remote = remote;
         }
 
-        void setUserActions(TUserInputAction actions) {
-            m_userActions = actions;
-        }
-
         virtual ~IUser() = default;
 
         virtual void update () = 0;
@@ -39,7 +27,6 @@ class IUser {
     protected:
         std::string      m_name;
         CRemoteControl * m_remote;
-        TUserInputAction  m_userActions;
 
 };
 

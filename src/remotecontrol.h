@@ -15,9 +15,6 @@ public:
 
     void goForward();
     void goBackward();
-    void goLeft();
-    void goRight();
-    void stop();
     void turnRight();
     void turnLeft();
     void pick();

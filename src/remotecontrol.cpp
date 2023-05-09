@@ -13,15 +13,6 @@ void CRemoteControl::goForward() {
 void CRemoteControl::goBackward() {
     m_Drone.setForwardInpulse(-20);
 }
-void CRemoteControl::goLeft() {
-    m_Drone.setMovingVector(CVector2D(-20, 0));
-}
-void CRemoteControl::goRight() {
-    m_Drone.setMovingVector(CVector2D(20, 0));
-}
-void CRemoteControl::stop() {
-    m_Drone.setMovingVector(CVector2D(0, 0));
-}
 void CRemoteControl::turnRight() {
     m_Drone.rotateAngle(m_Drone.getAngle() - 15);
 }

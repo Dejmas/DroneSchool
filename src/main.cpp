@@ -3,7 +3,7 @@
 #include "staticitem.h"
 #include "droneschool.h"
 #include "drone.h"
-#include "userinterface.h"
+#include "userinterfacesdl.h"
 #include "lesson.h"
 #include "reachdestinationcommand.h"
 #include "pickitemcommand.h"
@@ -72,18 +72,18 @@ ALesson makeLesson() {
 int main(int argc, char *argv[])
 {
     CDroneSchool droneSchool;
+    CUserInterface_SDL gui{droneSchool};
+
     droneSchool.setupDrone("Drone 1", CCoord(500, 500));
     droneSchool.setupSupervisor("Dr. Drone Expert");
-    droneSchool.setupStudent("Student 1");
+    droneSchool.setupStudent("Student 1", gui);
     //droneSchool.setBackground("lawn");
 
     ALesson lesson = makeLesson();
 
     droneSchool.addLesson(lesson);
     droneSchool.startLesson();
-
-    // assign drones to users and all to supervisor
-    CUserInterface_SDL gui{droneSchool};
+   
 
     if (!gui.init()) {
         std::cerr << "Some error" << std::endl;

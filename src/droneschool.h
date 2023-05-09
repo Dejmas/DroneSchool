@@ -7,6 +7,7 @@
 #include "supervisor.h"
 #include "remotecontrol.h"
 #include "lesson.h"
+#include "userinterface.h"
 
 #include <vector>
 #include <algorithm>
@@ -35,19 +36,14 @@ public:
         m_supervisor->setRemote(m_drone->getRemoteControl());
     }
 
-    void setupStudent (const std::string & name) {
-        m_student = new CStudent(name);
+    void setupStudent (const std::string & name, IUserInterface & ui) {
+        m_student = new CStudent(name, ui);
         m_student->setRemote(m_drone->getRemoteControl());
     }
 
     void addLesson(ALesson lesson) {
         m_lessons.push_back(lesson);
         m_currentLesson = lesson;
-    }
-
-    void setUserActions(TUserInputAction userActions) {
-        m_userActions = userActions;
-        m_student->setUserActions(userActions);
     }
 
     auto getItems() const {
