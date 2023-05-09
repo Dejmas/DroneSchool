@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
     gui.registerTexture("spot-3", "resources/spot-3.png");
     gui.registerTexture("lawn", "resources/lawn.jpeg");
     gui.registerTexture("lawn-2", "resources/lawn-2.jpeg");
-    gui.registerTexture("light", "resources/light.png");
+    // gui.registerTexture("light", "resources/light.png");
 
     gui.animationLoop();
 
