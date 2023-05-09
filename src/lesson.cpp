@@ -6,6 +6,7 @@ CLesson::CLesson(const std::string & name)
 , m_isComplete (false)
 , m_user (nullptr)
 , m_drone (nullptr)
+, m_stepsDone (0)
 {
     
 }
@@ -28,6 +29,7 @@ void CLesson::start(IUser * user, CDrone * drone) {
     m_isComplete = false;
     m_commandIter = m_commands.begin();
     m_drone->setPosition(m_startLocation);
+    m_stepsDone = 0;
 }
 
 void CLesson::update() {
@@ -37,7 +39,8 @@ void CLesson::update() {
     }
     ACommand command = *m_commandIter;
     if (command->isDone(*m_drone)) {
-        std::printf("Done!\n");
+        m_stepsDone ++;
+        std::printf("Done %u / %lu!\n", m_stepsDone, m_commands.size());
         m_commandIter ++;
     } else {
         command->letUserWorkOnIt(m_user);

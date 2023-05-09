@@ -20,6 +20,8 @@ private:
     IUser                 * m_user;
     CDrone                * m_drone;
     CCoord                  m_startLocation;
+    unsigned                m_stepsDone;
+    
 public:
     CLesson(const std::string & name);
     ~CLesson() = default;

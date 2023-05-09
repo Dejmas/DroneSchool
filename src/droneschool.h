@@ -82,12 +82,14 @@ public:
                 m_currentLesson->update();
                 m_drone->update();
             } else {
+                std::printf("Lesson is completed.\n");
                 if (m_teachingState == ETeachingState::SHOWING_HOW) {
                     m_currentLesson->rewind();
                     m_currentLesson->start(m_student, m_drone);
                     m_teachingState = ETeachingState::STUDENT_DO;
                 } else {
                     m_teachingState = ETeachingState::DONE;
+                    std::printf("DONE\n");
                 }
             }
         }
