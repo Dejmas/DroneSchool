@@ -84,7 +84,7 @@ public:
             } else {
                 std::printf("Lesson is completed.\n");
                 if (m_teachingState == ETeachingState::SHOWING_HOW) {
-                    // TODO: get lesson back to the initial state
+                    m_currentLesson->rewind();
                     m_currentLesson->start(m_student, m_drone);
                     m_teachingState = ETeachingState::STUDENT_DO;
                 } else {
