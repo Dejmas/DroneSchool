@@ -12,6 +12,12 @@
 #include <vector>
 #include <algorithm>
 
+enum class ETeachingState {
+    SHOWING_HOW,
+    STUDENT_DO,
+    DONE,
+};
+
 class CDroneSchool {
 public:
     CDroneSchool (): m_supervisor(nullptr) {
@@ -65,14 +71,25 @@ public:
 
     void startLesson() {
         m_currentLesson->start(m_supervisor, m_drone);
+        m_teachingState = ETeachingState::SHOWING_HOW;
     }
 
     void update() {
-        m_drone->update();
-        if (!m_currentLesson->isComplete()) {
-            m_currentLesson->update();
-        } else {
-            m_currentLesson->start(m_student, m_drone);
+        if (m_teachingState == ETeachingState::SHOWING_HOW
+          ||m_teachingState == ETeachingState::STUDENT_DO) {
+            
+            if (!m_currentLesson->isComplete()) {
+                m_currentLesson->update();
+                m_drone->update();
+            } else {
+                if (m_teachingState == ETeachingState::SHOWING_HOW) {
+                    // TODO: get lesson back to the initial state
+                    m_currentLesson->start(m_student, m_drone);
+                    m_teachingState = ETeachingState::STUDENT_DO;
+                } else {
+                    m_teachingState = ETeachingState::DONE;
+                }
+            }
         }
     }
 
@@ -88,6 +105,7 @@ private:
     std::vector<ALesson>  m_lessons;
     ALesson               m_currentLesson;
     TUserInputAction      m_userActions;
+    ETeachingState        m_teachingState;
 
 };
 

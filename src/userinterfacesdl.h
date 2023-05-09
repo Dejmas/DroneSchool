@@ -87,10 +87,10 @@ class CUserInterface_SDL : public IUserInterface {
             handleEvents();
             // Update entities
             update();
-            // draw new animation frame 
-            drawFrame();
+            // Render new animation frame 
+            renderFrame();
 
-            // calculates time to wait for 60 FRAMES PER SECOND
+            // Calculates time to wait for 60 FRAMES PER SECOND
             high_resolution_clock::time_point timeNow = high_resolution_clock::now();
             auto timeElapsed = duration_cast<milliseconds>(timeNow - timeLast);
             auto timeToWait = FRAME_DURATION - timeElapsed;
@@ -162,11 +162,10 @@ class CUserInterface_SDL : public IUserInterface {
                           (float)item->getWidth(), 
                           (float)item->getHeight()};
         SDL_RenderCopyExF(m_renderer, texture->getData(), NULL, &dest, 360.0-item->getAngle(), NULL, (SDL_RendererFlip)0);
-        // SDL_SetRenderDrawColor(m_renderer, 0x00, 0xFF, 0x00, 0xFF);
-        // SDL_RenderDrawPointF(m_renderer, item->getTarget().x, item->getTarget().y);
+        
     }
 
-    void drawFrame() {
+    void renderFrame() {
         // clears the screen
         SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 0);
         SDL_RenderClear(m_renderer);

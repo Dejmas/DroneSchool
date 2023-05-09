@@ -21,7 +21,6 @@ public:
     }
 
     void update () override {
-
     }
 
 private:
