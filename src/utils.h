@@ -65,57 +65,24 @@ public:
     double x, y;
 };
 
-static CVector2D operator - (CCoord left, CCoord right) {
-    return CVector2D(left.x - right.x, left.y - right.y);
-}
-
+CVector2D operator - (CCoord left, CCoord right);
 
 template <class T>
 T lerp(T from, T to, double fraction) {
     return from * (1 - fraction) + to * fraction;
 }
 
-#include <random>
-
-namespace {
-double normalize_angle(double x) {
-    return fmod(x + 180, 2.0*180) - 180;
-}
+#include <iosfwd>
 
 
-double lerp_angle(double a, double b, double t) {
+double normalize_angle(double x);
 
-    if (fabs(a-b) >= 180) {
-        if (a > b)
-            a = normalize_angle(a) - 2.0 * 180;
-        else
-            b = normalize_angle(b) - 2.0 * 180;
-    }
-    return normalize_angle(lerp(a, b, t));
-}
+double lerp_angle(double a, double b, double t);
 
-std::random_device rd;
+int randInteger(int from, int to);
 
-int randInteger(int from, int to) {
-    std::uniform_int_distribution<int> dist(from, to);
+std::ostream& operator << (std::ostream & os, CCoord coord);
 
-    return dist(rd);
-}
+std::ostream& operator << (std::ostream & os, CVector2D coord);
 
-std::uniform_int_distribution<int> dist(0, 9);
-}
-
-#include <iostream>
-namespace {
-
-
-std::ostream& operator << (std::ostream & os, CCoord coord) {
-    return os << '(' << coord.x << ", " << coord.y << ')'; 
-}
-
-std::ostream& operator << (std::ostream & os, CVector2D coord) {
-    return os << '(' << coord.x << ", " << coord.y << ')'; 
-}
-
-}
 #endif // UNTILS_H
