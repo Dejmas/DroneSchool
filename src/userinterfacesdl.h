@@ -73,7 +73,8 @@ class CUserInterface_SDL : public IUserInterface {
     void registerTexture(const std::string & name, const std::string & path) {
         auto texture = std::make_shared<CTexture> ();
         if (! texture->loadFromFile(path, m_renderer)) {
-            throw std::invalid_argument("failed to load texture");
+            std::string message = "failed to load texture " + path; 
+            throw std::invalid_argument(message);
         }
         m_textureByName[name] = texture;
     }
