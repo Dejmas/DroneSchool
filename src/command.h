@@ -10,7 +10,7 @@ class ICommand
 private:
 
 public:
-    ICommand(/* args */);
+    ICommand();
     virtual ~ICommand() = default;
 
     virtual bool isDone (CDrone & drone) const;
@@ -18,6 +18,8 @@ public:
     void letUserWorkOnIt (IUser *);
 
     virtual void workOnIt (CRemoteControl * ) = 0;
+
+    virtual void undo () = 0;
 
 };
 

@@ -47,6 +47,10 @@ void CLesson::update() {
     }
 }
 
+void CLesson::rewind() {
+    // TODO:
+}
+
 bool CLesson::isComplete() const {
     return m_isComplete;
 }

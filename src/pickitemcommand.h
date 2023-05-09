@@ -22,5 +22,9 @@ public:
         remote->pick();
     }    
 
+    virtual void undo () override {
+        // TODO:
+    }  
+
 };
 

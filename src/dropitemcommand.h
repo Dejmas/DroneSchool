@@ -20,7 +20,9 @@ public:
 
     virtual void workOnIt (CRemoteControl * remote) override {
         remote->pick();
-    }    
+    virtual void undo () override {
+        // TODO:
+    }
 
 };
 

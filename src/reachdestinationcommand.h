@@ -48,5 +48,9 @@ public:
             << "abs " << vecToDestination.abs() << "\n----\n"; */
     }    
 
+    virtual void undo () override {
+        // TODO:
+    }  
+
 };
 
