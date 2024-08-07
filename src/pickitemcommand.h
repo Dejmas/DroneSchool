@@ -7,6 +7,9 @@
 class CPickItemCommand : public ICommand {
 
     AItem m_item;
+    bool  m_started = false;
+    CCoord m_itemBeginLocationBackup;
+    CRemoteControl * m_remoteBackup;
 
 public: 
 
@@ -19,12 +22,21 @@ public:
     }
 
     virtual void workOnIt (CRemoteControl * remote) override {
+        if (!m_started) {
+            m_started = true;
+            m_itemBeginLocationBackup = m_item->getPosition();
+            m_remoteBackup = remote;
+        }
         remote->pick();
     }    
 
     virtual void undo () override {
-        // TODO:
-    }  
+        if (m_started) {
+            m_item->setPosition(m_itemBeginLocationBackup);
+            m_started = true;
+            m_remoteBackup->pick();
+        }
+    }
 
 };
 

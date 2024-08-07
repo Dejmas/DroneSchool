@@ -8,10 +8,9 @@
 #include "reachdestinationcommand.h"
 #include "pickitemcommand.h"
 #include "dropitemcommand.h"
-using namespace std;
 
 ALesson makeLesson() {
-    ALesson lesson = make_shared<CLesson> ("From A to B");
+    ALesson lesson = std::make_shared<CLesson> ("From A to B");
 
     auto background = std::make_shared<CStaticItem>("lawn", "lawn-2");
     background->setWidth(1200);
@@ -56,14 +55,14 @@ ALesson makeLesson() {
     lesson->addItem(spot3);
     lesson->addItem(rod);
     lesson->addItem(fish);
-    lesson->addCommand(make_shared<CReachDestinationCommand> (spot1->getPosition()));
-    lesson->addCommand(make_shared<CPickItemCommand> (rod));
-    lesson->addCommand(make_shared<CReachDestinationCommand> (spot2->getPosition()));
-    lesson->addCommand(make_shared<CDropItemCommand> (rod));
-    lesson->addCommand(make_shared<CReachDestinationCommand> (spot3->getPosition()));
-    lesson->addCommand(make_shared<CPickItemCommand> (fish));
-    lesson->addCommand(make_shared<CReachDestinationCommand> (startPort->getPosition()));
-    lesson->addCommand(make_shared<CDropItemCommand> (fish));
+    lesson->addCommand(std::make_shared<CReachDestinationCommand> (spot1->getPosition()));
+    lesson->addCommand(std::make_shared<CPickItemCommand> (rod));
+    lesson->addCommand(std::make_shared<CReachDestinationCommand> (spot2->getPosition()));
+    lesson->addCommand(std::make_shared<CDropItemCommand> (rod));
+    lesson->addCommand(std::make_shared<CReachDestinationCommand> (spot3->getPosition()));
+    lesson->addCommand(std::make_shared<CPickItemCommand> (fish));
+    lesson->addCommand(std::make_shared<CReachDestinationCommand> (startPort->getPosition()));
+    lesson->addCommand(std::make_shared<CDropItemCommand> (fish));
 
 
     return lesson;

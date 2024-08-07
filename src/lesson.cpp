@@ -48,7 +48,10 @@ void CLesson::update() {
 }
 
 void CLesson::rewind() {
-    // TODO:
+    for (auto it = m_commands.end()-1; ; it --) {
+        (*it)->undo();
+        if (it == m_commands.begin()) break;
+    }
 }
 
 bool CLesson::isComplete() const {

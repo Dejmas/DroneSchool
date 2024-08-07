@@ -5,3 +5,4 @@ dependencies.make
 debug/coord.test
 debug/lerp.test
 debug/vector2d.test
+doc

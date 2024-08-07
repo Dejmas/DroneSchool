@@ -7,6 +7,11 @@ class CReachDestinationCommand : public ICommand {
 
     CCoord m_destination;
 
+    bool  m_started = false;
+    CCoord m_droneBeginLocationBackup;
+    CRemoteControl * m_remoteBackup;
+    mutable CDrone * m_droneBackup;
+
 public: 
 
     CReachDestinationCommand(CCoord dest) : m_destination(dest) {};
@@ -14,6 +19,7 @@ public:
     virtual ~CReachDestinationCommand() {}
 
     virtual bool isDone (CDrone & drone) const override {
+        m_droneBackup = &drone;
         return (drone.getPosition() - m_destination).abs() < 10;
     }
 
@@ -37,6 +43,11 @@ public:
             }
         }
 
+        if (!m_started) {
+            m_started = true;
+            m_droneBeginLocationBackup = droneLoc;
+        }
+
         /* std::cout 
             << "drone " << droneLoc << "\n"
             << "dest " << m_destination << "\n"
@@ -46,11 +57,15 @@ public:
             << "droneDeg " << droneDeg << "\n"
             << "angleDiff " << angleDiff << "\n"
             << "abs " << vecToDestination.abs() << "\n----\n"; */
-    }    
+    }
 
     virtual void undo () override {
-        // TODO:
+        if (m_started) {
+            m_started = false;
+            m_droneBackup->setPosition(m_droneBeginLocationBackup);
+        }
     }  
+
 
 };
 
